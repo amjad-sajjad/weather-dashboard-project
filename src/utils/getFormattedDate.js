@@ -1,5 +1,5 @@
-const getFormattedDate = (time) => {
-    const date = new Date(time);
+const getFormattedDate = () => {
+    const date = new Date();
     //check as their time and corresponding date is string, if it is not a number then throw an error:
     if(isNaN(date.getTime())){
         throw new Error("Invalid time input")

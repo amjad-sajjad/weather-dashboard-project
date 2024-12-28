@@ -5,7 +5,7 @@ import { WeatherContex } from '../../contex';
 import { getFormattedDate } from '../../utils/getFormattedDate';
 const WeatherHeadline = () => {
     const {weatherData} = useContext(WeatherContex);
-   const {location,temperature,time} = weatherData;
+   const {location,temperature} = weatherData;
     return (
         <div>
             <div className="max-md:flex items-center justify-between md:-mt-10">
@@ -18,7 +18,7 @@ const WeatherHeadline = () => {
                     </div>
                 </div>
             </div>
-            <p className="text-sm lg:text-lg">{getFormattedDate(time)}</p>
+            <p className="text-sm lg:text-lg">{getFormattedDate()}</p> 
         </div>
     );
 };

@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { LocationContex } from "../contex";
 
 const useFetchData = () => {
     const [weatherData, setWeatherData] = useState({
@@ -20,20 +21,18 @@ const useFetchData = () => {
     });
     const [error, setError] = useState(null);
 
-    //function for data fetching....
-
-
+    const {selectedLocation:{latitude, longitude}} = useContext(LocationContex);
 
     useEffect(() => {
         setLoading((prev) => ({
             ...prev,
-            loading: true,
-            message: "Finding Position..."
+            state: true,
+            message: "Finding Location..."
 
         }))
 
-        const fetchData = async (latitude, longitude) => {
-            console.log(latitude,longitude)
+        const fetchData = async (lat, long) => {
+
             try {
                 //taking updater function to avoid unnecessary dependency here:
                 setLoading((prev) => ({
@@ -42,12 +41,12 @@ const useFetchData = () => {
                     message: "Fetching Data ..."
                 }));
                 //fetch call here
-                const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${import.meta.env.VITE_WEATHER_API_KEY}&units=metric`);
+                const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${import.meta.env.VITE_WEATHER_API_KEY}&units=metric`);
                 if (!response.ok) {
                     const error = `There is an error due to ${response.status}, Please try again...`;
                     throw new Error(error);
                 }
-                const data = await response.json();                
+                const data = await response.json(); 
                 //taking updater function to avoid unnecessary dependency here:
                 setWeatherData((prev) => ({
                     ...prev,
@@ -78,12 +77,18 @@ const useFetchData = () => {
 
             }
         };
-        navigator.geolocation.getCurrentPosition((position) => {
-            fetchData(position.coords.latitude, position.coords.longitude)
-        })
+        if(latitude && longitude){
+            fetchData(latitude,longitude);
+        }
+        
+        else{
+            navigator.geolocation.getCurrentPosition((position) => {
+                fetchData(position.coords.latitude, position.coords.longitude)
+            })
+        }  
+       
 
-
-    }, []);
+    }, [latitude, longitude]);
 
     return {
         weatherData,
